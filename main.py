@@ -46,7 +46,8 @@ for filename in feat_major_files:
     merged.to_csv(f'{src}/{extracted_filename}', index=False)
 
 dataframes = []
-for filename in source_files:
+print(source_files)
+for filename in  os.listdir(src):
     if "csv" in filename and not filename.startswith("feat_major_") and not filename.startswith("feat_adaptive_"):
         print(filename)
         df = pd.read_csv(f'{src}/{filename}')
