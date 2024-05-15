@@ -30,24 +30,25 @@ src = os.environ['INPUT_DIR']
 dest = os.environ['OUTPUT_DIR']
 
 source_files = os.listdir(src)
+# print("source files: ", source_files)
+feat_major_files = [filename for filename in os.listdir(src) if filename.startswith("feat_major_")]
+feat_adaptive_files = [filename for filename in os.listdir(src) if filename.startswith("feat_adaptive_")]
 
-print("source files: ", source_files)
+print(feat_major_files)
+print(feat_adaptive_files)
 
-if 'feat_major' in source_files and 'feat_adaptive' in source_files:
-    print('feat_major and feat_adaptive present in the list')
-    feat_major_files = os.listdir(f'{src}/feat_major')
-    feat_adaptive_files = os.listdir(f'{src}/feat_adaptive')
+for filename in feat_major_files:
+    extracted_filename = filename[len("feat_major_"):]
+    feat_major_df = pd.read_csv(f'{src}/feat_major_{extracted_filename}')
+    feat_adaptive_df = pd.read_csv(f'{src}/feat_adaptive_{extracted_filename}')
 
-    for filename in feat_major_files:
-        feat_major_df = pd.read_csv(f'{src}/feat_major/{filename}')
-        feat_adaptive_df = pd.read_csv(f'{src}/feat_adaptive/{filename}')
-
-        merged = feat_major_df.merge(feat_adaptive_df, on='file')
-        merged.to_csv(f'{src}/{filename}', index=False)
+    merged = feat_major_df.merge(feat_adaptive_df, on='file')
+    merged.to_csv(f'{src}/{extracted_filename}', index=False)
 
 dataframes = []
 for filename in source_files:
-    if "csv" in filename:
+    if "csv" in filename and not filename.startswith("feat_major_") and not filename.startswith("feat_adaptive_"):
+        print(filename)
         df = pd.read_csv(f'{src}/{filename}')
         df['subject'] = extractSubject(df["file"].squeeze())
         dataframes.append(df)
