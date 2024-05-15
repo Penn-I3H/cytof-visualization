@@ -46,7 +46,6 @@ for filename in feat_major_files:
     merged.to_csv(f'{src}/{extracted_filename}', index=False)
 
 dataframes = []
-print(source_files)
 for filename in  os.listdir(src):
     if "csv" in filename and not filename.startswith("feat_major_") and not filename.startswith("feat_adaptive_"):
         print(filename)
